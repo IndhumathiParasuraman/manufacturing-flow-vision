@@ -1,0 +1,253 @@
+
+import { BOMItem, Employee, InventoryItem, ProductionSchedule, PurchaseOrder, Supplier } from "@/types/mrp";
+
+export const mockInventory: InventoryItem[] = [
+  {
+    item_id: 1,
+    name: "Motherboard",
+    description: "ATX Motherboard",
+    quantity_on_hand: 120,
+    reorder_point: 50,
+    unit_cost: 89.99,
+    category: "Electronics",
+    last_updated: new Date("2025-04-15"),
+  },
+  {
+    item_id: 2,
+    name: "CPU",
+    description: "3.2GHz Processor",
+    quantity_on_hand: 75,
+    reorder_point: 30,
+    unit_cost: 249.99,
+    category: "Electronics",
+    last_updated: new Date("2025-04-20"),
+  },
+  {
+    item_id: 3,
+    name: "RAM",
+    description: "16GB DDR4",
+    quantity_on_hand: 200,
+    reorder_point: 80,
+    unit_cost: 79.99,
+    category: "Electronics",
+    last_updated: new Date("2025-04-18"),
+  },
+  {
+    item_id: 4,
+    name: "Computer Case",
+    description: "Mid Tower Case",
+    quantity_on_hand: 45,
+    reorder_point: 20,
+    unit_cost: 59.99,
+    category: "Hardware",
+    last_updated: new Date("2025-04-10"),
+  },
+  {
+    item_id: 5,
+    name: "Power Supply",
+    description: "650W Power Supply",
+    quantity_on_hand: 60,
+    reorder_point: 25,
+    unit_cost: 69.99,
+    category: "Electronics",
+    last_updated: new Date("2025-04-12"),
+  },
+];
+
+export const mockBOM: BOMItem[] = [
+  {
+    parent_item_id: 101,
+    parent_name: "Desktop Computer",
+    component_id: 1,
+    component_name: "Motherboard",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 101,
+    parent_name: "Desktop Computer",
+    component_id: 2,
+    component_name: "CPU",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 101,
+    parent_name: "Desktop Computer",
+    component_id: 3,
+    component_name: "RAM",
+    quantity_needed: 2,
+  },
+  {
+    parent_item_id: 101,
+    parent_name: "Desktop Computer",
+    component_id: 4,
+    component_name: "Computer Case",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 101,
+    parent_name: "Desktop Computer",
+    component_id: 5,
+    component_name: "Power Supply",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 102,
+    parent_name: "Gaming Computer",
+    component_id: 1,
+    component_name: "Motherboard",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 102,
+    parent_name: "Gaming Computer",
+    component_id: 2,
+    component_name: "CPU",
+    quantity_needed: 1,
+  },
+  {
+    parent_item_id: 102,
+    parent_name: "Gaming Computer",
+    component_id: 3,
+    component_name: "RAM",
+    quantity_needed: 4,
+  },
+];
+
+export const mockSchedule: ProductionSchedule[] = [
+  {
+    schedule_id: 1001,
+    item_id: 101,
+    item_name: "Desktop Computer",
+    start_date: new Date("2025-05-05"),
+    end_date: new Date("2025-05-10"),
+    planned_qty: 50,
+  },
+  {
+    schedule_id: 1002,
+    item_id: 102,
+    item_name: "Gaming Computer",
+    start_date: new Date("2025-05-12"),
+    end_date: new Date("2025-05-18"),
+    planned_qty: 30,
+  },
+  {
+    schedule_id: 1003,
+    item_id: 101,
+    item_name: "Desktop Computer",
+    start_date: new Date("2025-05-20"),
+    end_date: new Date("2025-05-25"),
+    planned_qty: 75,
+  },
+];
+
+export const mockPurchaseOrders: PurchaseOrder[] = [
+  {
+    order_id: 2001,
+    item_id: 1,
+    item_name: "Motherboard",
+    supplier_id: 501,
+    supplier_name: "Tech Components Inc.",
+    quantity_ordered: 100,
+    order_date: new Date("2025-04-01"),
+    expected_date: new Date("2025-04-15"),
+    status: "Received",
+  },
+  {
+    order_id: 2002,
+    item_id: 2,
+    item_name: "CPU",
+    supplier_id: 502,
+    supplier_name: "CPU World",
+    quantity_ordered: 50,
+    order_date: new Date("2025-04-05"),
+    expected_date: new Date("2025-04-20"),
+    status: "Received",
+  },
+  {
+    order_id: 2003,
+    item_id: 3,
+    item_name: "RAM",
+    supplier_id: 501,
+    supplier_name: "Tech Components Inc.",
+    quantity_ordered: 150,
+    order_date: new Date("2025-04-10"),
+    expected_date: new Date("2025-04-24"),
+    status: "Ordered",
+  },
+  {
+    order_id: 2004,
+    item_id: 4,
+    item_name: "Computer Case",
+    supplier_id: 503,
+    supplier_name: "Hardware Supplies Co.",
+    quantity_ordered: 30,
+    order_date: new Date("2025-04-12"),
+    expected_date: new Date("2025-05-02"),
+    status: "Processing",
+  },
+];
+
+export const mockEmployees: Employee[] = [
+  {
+    employee_id: 101,
+    name: "John Smith",
+    role: "Production Manager",
+    department: "Manufacturing",
+    shift: "Morning",
+  },
+  {
+    employee_id: 102,
+    name: "Sarah Johnson",
+    role: "Operator",
+    department: "Assembly",
+    shift: "Morning",
+  },
+  {
+    employee_id: 103,
+    name: "Michael Brown",
+    role: "Operator",
+    department: "Assembly",
+    shift: "Evening",
+  },
+  {
+    employee_id: 104,
+    name: "Lisa Davis",
+    role: "Quality Control",
+    department: "QA",
+    shift: "Morning",
+  },
+  {
+    employee_id: 105,
+    name: "Robert Wilson",
+    role: "Technician",
+    department: "Maintenance",
+    shift: "Night",
+  },
+];
+
+export const mockSuppliers: Supplier[] = [
+  {
+    supplier_id: 501,
+    name: "Tech Components Inc.",
+    contact_info: "contact@techcomponents.com | 555-123-4567",
+    rating: 5,
+  },
+  {
+    supplier_id: 502,
+    name: "CPU World",
+    contact_info: "orders@cpuworld.com | 555-987-6543",
+    rating: 4,
+  },
+  {
+    supplier_id: 503,
+    name: "Hardware Supplies Co.",
+    contact_info: "info@hardwaresupplies.com | 555-456-7890",
+    rating: 3,
+  },
+  {
+    supplier_id: 504,
+    name: "Global Electronics",
+    contact_info: "sales@globalelectronics.com | 555-789-0123",
+    rating: 5,
+  },
+];

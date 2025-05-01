@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom MRP colors
+				mrp: {
+					primary: '#1E5B94',
+					secondary: '#4D5E6F',
+					accent: '#F26419',
+					background: '#F7F9FC',
+					success: '#10B981',
+					warning: '#F59E0B',
+					danger: '#EF4444',
 				}
 			},
 			borderRadius: {
