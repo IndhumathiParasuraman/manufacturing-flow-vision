@@ -25,13 +25,13 @@ export function DatabaseProvider({ children }: { children: ReactNode }) {
       if (connected) {
         toast({
           title: "Database Connected",
-          description: "Successfully connected to the MySQL database",
+          description: "Successfully connected to the database (mock data in browser)",
         });
       } else {
         setError("Failed to connect to database");
         toast({
           title: "Database Connection Failed",
-          description: "Could not connect to the MySQL database. Please check your configuration.",
+          description: "Could not connect to the database. Please check your configuration.",
           variant: "destructive",
         });
       }

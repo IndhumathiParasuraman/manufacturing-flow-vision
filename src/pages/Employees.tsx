@@ -1,6 +1,5 @@
 
 import { MRPLayout } from "@/components/mrp/MRPLayout";
-import { mockEmployees } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,18 +13,21 @@ import {
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import { useEmployees } from "@/hooks/useEmployees";
 
 const Employees = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { getAllEmployees } = useEmployees();
+  const { data: employees, isLoading } = getAllEmployees();
 
   // Filter employees by search term
-  const filteredEmployees = mockEmployees.filter(
+  const filteredEmployees = employees?.filter(
     (employee) =>
       employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.shift.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
 
   // Function to get shift badge color
   const getShiftBadge = (shift: string) => {
@@ -63,7 +65,6 @@ const Employees = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Department</TableHead>
@@ -71,20 +72,26 @@ const Employees = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredEmployees.map((employee) => (
-              <TableRow key={employee.employee_id}>
-                <TableCell className="font-medium">{employee.employee_id}</TableCell>
-                <TableCell>{employee.name}</TableCell>
-                <TableCell>{employee.role}</TableCell>
-                <TableCell>{employee.department}</TableCell>
-                <TableCell>
-                  <Badge className={getShiftBadge(employee.shift)}>{employee.shift}</Badge>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-4">
+                  Loading employee data...
                 </TableCell>
               </TableRow>
-            ))}
-            {filteredEmployees.length === 0 && (
+            ) : filteredEmployees.length > 0 ? (
+              filteredEmployees.map((employee, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{employee.name}</TableCell>
+                  <TableCell>{employee.role}</TableCell>
+                  <TableCell>{employee.department}</TableCell>
+                  <TableCell>
+                    <Badge className={getShiftBadge(employee.shift)}>{employee.shift}</Badge>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
                   No employees found.
                 </TableCell>
               </TableRow>

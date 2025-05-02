@@ -1,6 +1,5 @@
 
 import { MRPLayout } from "@/components/mrp/MRPLayout";
-import { mockBOM } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,25 +12,19 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { useBOM } from "@/hooks/useBOM";
 
 const BOM = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Group BOM items by parent item for better display
-  const bomByParent = mockBOM.reduce((acc, item) => {
-    if (!acc[item.parent_item_id]) {
-      acc[item.parent_item_id] = [];
-    }
-    acc[item.parent_item_id].push(item);
-    return acc;
-  }, {} as Record<number, typeof mockBOM>);
+  const { getAllBOM } = useBOM();
+  const { data: bomItems, isLoading } = getAllBOM();
 
   // Filter BOM items by search term
-  const filteredBOM = mockBOM.filter(
+  const filteredBOM = bomItems?.filter(
     (item) =>
       item.parent_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.component_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
 
   return (
     <MRPLayout>
@@ -61,14 +54,21 @@ const BOM = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredBOM.map((item, index) => (
-              <TableRow key={`${item.parent_item_id}-${item.component_id}`}>
-                <TableCell className="font-medium">{item.parent_name}</TableCell>
-                <TableCell>{item.component_name}</TableCell>
-                <TableCell className="text-right">{item.quantity_needed}</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center py-4">
+                  Loading BOM data...
+                </TableCell>
               </TableRow>
-            ))}
-            {filteredBOM.length === 0 && (
+            ) : filteredBOM.length > 0 ? (
+              filteredBOM.map((item, index) => (
+                <TableRow key={`${item.parent_item_id}-${item.component_id}-${index}`}>
+                  <TableCell className="font-medium">{item.parent_name}</TableCell>
+                  <TableCell>{item.component_name}</TableCell>
+                  <TableCell className="text-right">{item.quantity_needed}</TableCell>
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
                   No BOM entries found.
