@@ -1,6 +1,5 @@
 
 import { MRPLayout } from "@/components/mrp/MRPLayout";
-import { mockPurchaseOrders } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,18 +13,21 @@ import {
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import { usePurchaseOrders } from "@/hooks/usePurchaseOrders";
 
 const PurchaseOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { getAllOrders } = usePurchaseOrders();
+  const { data: orders, isLoading } = getAllOrders();
 
   // Filter purchase orders by search term
-  const filteredOrders = mockPurchaseOrders.filter(
+  const filteredOrders = orders?.filter(
     (order) =>
       order.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.supplier_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.order_id.toString().includes(searchTerm) ||
       order.status.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
 
   // Function to get badge color based on status
   const getStatusBadge = (status: string) => {
@@ -75,20 +77,27 @@ const PurchaseOrders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredOrders.map((order) => (
-              <TableRow key={order.order_id}>
-                <TableCell className="font-medium">{order.order_id}</TableCell>
-                <TableCell>{order.item_name}</TableCell>
-                <TableCell>{order.supplier_name}</TableCell>
-                <TableCell className="text-right">{order.quantity_ordered}</TableCell>
-                <TableCell>{order.order_date.toLocaleDateString()}</TableCell>
-                <TableCell>{order.expected_date.toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <Badge className={getStatusBadge(order.status)}>{order.status}</Badge>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
+                  Loading order data...
                 </TableCell>
               </TableRow>
-            ))}
-            {filteredOrders.length === 0 && (
+            ) : filteredOrders.length > 0 ? (
+              filteredOrders.map((order) => (
+                <TableRow key={order.order_id}>
+                  <TableCell className="font-medium">{order.order_id}</TableCell>
+                  <TableCell>{order.item_name}</TableCell>
+                  <TableCell>{order.supplier_name}</TableCell>
+                  <TableCell className="text-right">{order.quantity_ordered}</TableCell>
+                  <TableCell>{order.order_date.toLocaleDateString()}</TableCell>
+                  <TableCell>{order.expected_date.toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <Badge className={getStatusBadge(order.status)}>{order.status}</Badge>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-4 text-muted-foreground">
                   No purchase orders found.

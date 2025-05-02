@@ -23,15 +23,23 @@ export function DatabaseProvider({ children }: { children: ReactNode }) {
       const connected = await testConnection();
       setIsConnected(connected);
       if (connected) {
-        toast({
-          title: "Mock Database Connected",
-          description: "Using mock data in browser. To use real MySQL, implement a backend API.",
-        });
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (apiUrl) {
+          toast({
+            title: "Database Connected",
+            description: `Connected to API at ${apiUrl}`,
+          });
+        } else {
+          toast({
+            title: "Using Mock Data",
+            description: "No API URL configured. Set VITE_API_URL in .env to connect to backend API.",
+          });
+        }
       } else {
-        setError("Failed to connect to mock database");
+        setError("Failed to connect to database or API server");
         toast({
-          title: "Database Connection Failed",
-          description: "Could not connect to the mock database. See console for details.",
+          title: "Connection Failed",
+          description: "Could not connect to database or API server. Using mock data.",
           variant: "destructive",
         });
       }
@@ -40,7 +48,7 @@ export function DatabaseProvider({ children }: { children: ReactNode }) {
       const errorMessage = err instanceof Error ? err.message : "Unknown database error";
       setError(errorMessage);
       toast({
-        title: "Database Error",
+        title: "Connection Error",
         description: errorMessage,
         variant: "destructive",
       });
