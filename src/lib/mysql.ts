@@ -1,10 +1,13 @@
-
 import { mockBOM, mockEmployees, mockPurchaseOrders, mockSchedule, mockSuppliers } from '@/data/mockData';
 
-// Database services for mock data
+// IMPORTANT: This file uses mock data for the browser environment
+// To connect to a real MySQL database, you need a backend server (Node.js/Express)
+// that exposes API endpoints which this frontend can call
+
+// Database services using mock data
 export const bomService = {
   getAllBOM: async () => {
-    console.log('Using mock BOM data');
+    console.log('Using mock BOM data - To use real MySQL, implement a backend API');
     return Promise.resolve(mockBOM);
   },
   
@@ -21,7 +24,7 @@ export const bomService = {
 
 export const productionService = {
   getAllSchedules: async () => {
-    console.log('Using mock production schedule data');
+    console.log('Using mock production schedule data - To use real MySQL, implement a backend API');
     return Promise.resolve(mockSchedule);
   },
   
@@ -38,7 +41,7 @@ export const productionService = {
 
 export const purchaseOrderService = {
   getAllOrders: async () => {
-    console.log('Using mock purchase order data');
+    console.log('Using mock purchase order data - To use real MySQL, implement a backend API');
     return Promise.resolve(mockPurchaseOrders);
   },
   
@@ -61,7 +64,7 @@ export const purchaseOrderService = {
 
 export const employeeService = {
   getAllEmployees: async () => {
-    console.log('Using mock employee data');
+    console.log('Using mock employee data - To use real MySQL, implement a backend API');
     return Promise.resolve(mockEmployees);
   },
   
@@ -78,7 +81,7 @@ export const employeeService = {
 
 export const supplierService = {
   getAllSuppliers: async () => {
-    console.log('Using mock supplier data');
+    console.log('Using mock supplier data - To use real MySQL, implement a backend API');
     return Promise.resolve(mockSuppliers);
   },
   
@@ -98,12 +101,16 @@ export const supplierService = {
   }
 };
 
-// Test connection function - in browser we'll just simulate a successful connection
+// Test connection function - in browser we'll just simulate a connection
 export const testConnection = async () => {
   try {
-    console.log('Simulating database connection test in browser environment');
-    console.log('Note: Real MySQL connections can only be established from a server environment');
-    // In a real app with a backend, this would actually connect to MySQL
+    console.log('BROWSER ENVIRONMENT: Cannot connect directly to MySQL from browser');
+    console.log('To use real MySQL data, implement a backend API (Node.js/Express) that this frontend can call');
+    
+    // In a real implementation with a backend API, this would call an endpoint to test the connection
+    // return fetch('api/database/test-connection').then(res => res.json()).then(data => data.success);
+    
+    // For now, we'll just simulate a successful connection
     return true;
   } catch (error) {
     console.error('Error connecting to database:', error);
@@ -113,7 +120,9 @@ export const testConnection = async () => {
 
 // Generic query executor (mock implementation for browser)
 export const executeQuery = async <T>(query: string, params: any[] = []): Promise<T[]> => {
-  console.log('Mock query execution', { query, params });
+  console.log('BROWSER ENVIRONMENT: Cannot execute MySQL queries directly from browser');
+  console.log('To execute real queries, implement a backend API that this frontend can call');
+  console.log('Mock query that would be sent to backend:', { query, params });
   return Promise.resolve([]) as Promise<T[]>;
 };
 

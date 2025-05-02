@@ -1,6 +1,5 @@
 
 import { MRPLayout } from "@/components/mrp/MRPLayout";
-import { mockSchedule } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,19 +13,22 @@ import {
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import { useProductionSchedule } from "@/hooks/useProductionSchedule";
 
 const ProductionSchedule = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { getAllSchedules } = useProductionSchedule();
+  const { data: schedules, isLoading } = getAllSchedules();
 
   // Filter production schedules by search term
-  const filteredSchedules = mockSchedule.filter(
+  const filteredSchedules = schedules?.filter(
     (schedule) =>
       schedule.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       schedule.schedule_id.toString().includes(searchTerm)
-  );
+  ) || [];
 
   // Function to determine if a production is active, upcoming, or completed
-  const getProductionStatus = (schedule: typeof mockSchedule[0]) => {
+  const getProductionStatus = (schedule: { start_date: Date; end_date: Date }) => {
     const today = new Date();
     
     if (schedule.start_date > today) {
@@ -69,22 +71,29 @@ const ProductionSchedule = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredSchedules.map((schedule) => {
-              const { status, color } = getProductionStatus(schedule);
-              return (
-                <TableRow key={schedule.schedule_id}>
-                  <TableCell className="font-medium">{schedule.schedule_id}</TableCell>
-                  <TableCell>{schedule.item_name}</TableCell>
-                  <TableCell>{schedule.start_date.toLocaleDateString()}</TableCell>
-                  <TableCell>{schedule.end_date.toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">{schedule.planned_qty}</TableCell>
-                  <TableCell>
-                    <Badge className={color}>{status}</Badge>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-            {filteredSchedules.length === 0 && (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-4">
+                  Loading production schedule data...
+                </TableCell>
+              </TableRow>
+            ) : filteredSchedules.length > 0 ? (
+              filteredSchedules.map((schedule) => {
+                const { status, color } = getProductionStatus(schedule);
+                return (
+                  <TableRow key={schedule.schedule_id}>
+                    <TableCell className="font-medium">{schedule.schedule_id}</TableCell>
+                    <TableCell>{schedule.item_name}</TableCell>
+                    <TableCell>{schedule.start_date.toLocaleDateString()}</TableCell>
+                    <TableCell>{schedule.end_date.toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">{schedule.planned_qty}</TableCell>
+                    <TableCell>
+                      <Badge className={color}>{status}</Badge>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            ) : (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-4 text-muted-foreground">
                   No production schedules found.

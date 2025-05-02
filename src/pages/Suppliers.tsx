@@ -1,6 +1,5 @@
 
 import { MRPLayout } from "@/components/mrp/MRPLayout";
-import { mockSuppliers } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,16 +12,19 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { useSuppliers } from "@/hooks/useSuppliers";
 
 const Suppliers = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { getAllSuppliers } = useSuppliers();
+  const { data: suppliers, isLoading } = getAllSuppliers();
 
   // Filter suppliers by search term
-  const filteredSuppliers = mockSuppliers.filter(
+  const filteredSuppliers = suppliers?.filter(
     (supplier) =>
       supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.contact_info.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
 
   // Function to render supplier rating as stars
   const renderRating = (rating: number) => {
@@ -73,15 +75,22 @@ const Suppliers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredSuppliers.map((supplier) => (
-              <TableRow key={supplier.supplier_id}>
-                <TableCell className="font-medium">{supplier.supplier_id}</TableCell>
-                <TableCell>{supplier.name}</TableCell>
-                <TableCell>{supplier.contact_info}</TableCell>
-                <TableCell>{renderRating(supplier.rating)}</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-4">
+                  Loading supplier data...
+                </TableCell>
               </TableRow>
-            ))}
-            {filteredSuppliers.length === 0 && (
+            ) : filteredSuppliers.length > 0 ? (
+              filteredSuppliers.map((supplier) => (
+                <TableRow key={supplier.supplier_id}>
+                  <TableCell className="font-medium">{supplier.supplier_id}</TableCell>
+                  <TableCell>{supplier.name}</TableCell>
+                  <TableCell>{supplier.contact_info}</TableCell>
+                  <TableCell>{renderRating(supplier.rating)}</TableCell>
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
                   No suppliers found.
