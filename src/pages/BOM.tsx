@@ -19,10 +19,10 @@ const BOM = () => {
 
   // Group BOM items by parent item for better display
   const bomByParent = mockBOM.reduce((acc, item) => {
-    if (!acc[item.parent_id]) {
-      acc[item.parent_id] = [];
+    if (!acc[item.parent_item_id]) {
+      acc[item.parent_item_id] = [];
     }
-    acc[item.parent_id].push(item);
+    acc[item.parent_item_id].push(item);
     return acc;
   }, {} as Record<number, typeof mockBOM>);
 
